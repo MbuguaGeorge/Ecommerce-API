@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +76,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Ecommerce.wsgi.application'
 
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000"
+]
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

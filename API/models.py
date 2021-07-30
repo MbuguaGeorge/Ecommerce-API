@@ -17,4 +17,7 @@ class Products(models.Model):
     product_category = models.CharField(choices=CATEGORY,max_length=100,default=SHOES)
     product_price = models.FloatField()
     thumbnail = models.ImageField(blank=False)
-    date_added = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateTimeField(auto_now_add=True,null=True)
+
+    def __str__(self):
+        return self.product_name

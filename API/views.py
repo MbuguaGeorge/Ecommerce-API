@@ -3,11 +3,12 @@ from django.http import response
 from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, ListSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from .models import Products
 
 # Create your views here.
 @api_view(['POST',])
@@ -45,3 +46,10 @@ class TokenView(APIView):
                 return Response({user.username : user.auth_token.key})
             else:
                 return Response({"error" : "Wrong credentials"}, status = status.HTTP_400_BAD_REQUEST)
+
+class productList(generics.ListAPIView):
+    lookup_field = 'pk'
+    serializer_class = ListSerializer
+
+    def get_queryset(self):
+        return Products.objects.all()

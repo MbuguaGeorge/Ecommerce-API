@@ -3,12 +3,14 @@ from django.http import response
 from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
-from .serializers import ProfileSerializer, ListSerializer
+from .serializers import ProfileSerializer, ListSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from .models import Products
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @api_view(['POST',])
@@ -34,12 +36,12 @@ class TokenView(APIView):
         password = request.data.get('password')
         user = authenticate(username=username, password=password)
         if user:
-            token = Token.objects.get_or_create(user=User)
+            token = Token.objects.get_or_create(user=user)
             return Response({"token" : user.auth_token.key})
         else:
             return Response({"error" : "Wrong credentials"}, status = status.HTTP_400_BAD_REQUEST)
 
-    def get(self,):
+    def get(self,request):
         for user in User.objects.all():
             token = Token.objects.get(user=user)
             if token:
@@ -53,3 +55,10 @@ class productList(generics.ListAPIView):
 
     def get_queryset(self):
         return Products.objects.all()
+
+class userList(generics.ListAPIView):
+    lookup_field = 'pk'
+    serializer_class = UserSerializer
+    
+    def get_queryset(self):
+        return User.objects.all()

@@ -30,3 +30,8 @@ class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ('product_name','product_category','product_price','thumbnail')
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username','email')

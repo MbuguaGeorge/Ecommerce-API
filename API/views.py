@@ -1,6 +1,4 @@
 from django.contrib.auth import authenticate
-from django.http import response
-from django.shortcuts import render
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from .serializers import ProfileSerializer, ListSerializer, UserSerializer
@@ -8,9 +6,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from .models import Products
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
+from .models import Product, CartItem, Cart
+from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 @api_view(['POST',])
@@ -35,30 +33,35 @@ class TokenView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
         user = authenticate(username=username, password=password)
+        serializer = UserSerializer(user)
         if user:
             token = Token.objects.get_or_create(user=user)
-            return Response({"token" : user.auth_token.key})
+            return Response({"token" : user.auth_token.key,"user":serializer.data})
         else:
             return Response({"error" : "Wrong credentials"}, status = status.HTTP_400_BAD_REQUEST)
 
-    def get(self,request):
+class CurView(APIView):
+    permission_classes = [IsAuthenticated,]
+    def get(self, request,):
         for user in User.objects.all():
-            token = Token.objects.get(user=user)
-            if token:
-                return Response({user.username : user.auth_token.key})
+            if request.user.is_authenticated:
+                serializer = UserSerializer(request.user)
+                return Response({"user":serializer.data})
             else:
-                return Response({"error" : "Wrong credentials"}, status = status.HTTP_400_BAD_REQUEST)
+                return Response({"error":"not authenticated"})
 
 class productList(generics.ListAPIView):
     lookup_field = 'pk'
     serializer_class = ListSerializer
 
     def get_queryset(self):
-        return Products.objects.all()
+        return Product.objects.all()
 
 class userList(generics.ListAPIView):
     lookup_field = 'pk'
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         return User.objects.all()
+

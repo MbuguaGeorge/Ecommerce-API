@@ -6,4 +6,5 @@ urlpatterns = [
     path('token', views.TokenView.as_view()),
     path('products', views.productList.as_view()),
     path('user', views.userList.as_view()),
+    path('cur/', views.CurView.as_view()),
 ]

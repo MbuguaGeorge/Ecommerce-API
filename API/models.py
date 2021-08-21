@@ -24,16 +24,9 @@ class Product(models.Model):
         return self.product_name
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=datetime.now)
+    user = models.OneToOneField(User, models.CASCADE, blank=True)
+    created_at = models.DateTimeField(default=datetime.now())
+    product = models.ManyToManyField(Product, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
-
-class CartItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.product)

@@ -1,14 +1,15 @@
 from django.contrib.auth import authenticate
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
-from .serializers import ProfileSerializer, ListSerializer, UserSerializer
+from .serializers import ProfileSerializer, ListSerializer, UserSerializer, CartSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from .models import Product, CartItem, Cart
+from .models import Product, Cart
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 @api_view(['POST',])
@@ -42,6 +43,7 @@ class TokenView(APIView):
 
 class CurView(APIView):
     permission_classes = [IsAuthenticated,]
+
     def get(self, request,):
         for user in User.objects.all():
             if request.user.is_authenticated:
@@ -65,3 +67,20 @@ class userList(generics.ListAPIView):
     def get_queryset(self):
         return User.objects.all()
 
+@api_view(['GET',])
+@permission_classes((IsAuthenticated,))
+def add(request, pk):
+    product = get_object_or_404(Product, id=pk)
+    if request.user.is_authenticated:
+        mycart, _ = Cart.objects.get_or_create(user=request.user)
+        mycart.product.add(product)
+        return Response({'item added'})
+    else:
+        return Response({'error'})
+
+class CartList(generics.ListAPIView):
+    lookup_field = 'pk'
+    serializer_class = CartSerializer
+    
+    def get_queryset(self):
+        return Cart.objects.all()

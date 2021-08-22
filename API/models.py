@@ -26,7 +26,7 @@ class Product(models.Model):
 class Cart(models.Model):
     user = models.OneToOneField(User, models.CASCADE, blank=True)
     created_at = models.DateTimeField(default=datetime.now())
-    product = models.ManyToManyField(Product, blank=True, null=True)
+    product = models.ManyToManyField(Product, blank=True)
 
     def __str__(self):
         return self.user.username

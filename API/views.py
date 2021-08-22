@@ -78,9 +78,10 @@ def add(request, pk):
     else:
         return Response({'error'})
 
-class CartList(generics.ListAPIView):
-    lookup_field = 'pk'
-    serializer_class = CartSerializer
+class CartView(APIView):
+    permission_classes = (IsAuthenticated,)
     
-    def get_queryset(self):
-        return Cart.objects.all()
+    def get(self,request):
+        cart = Cart.objects.get(user=request.user)
+        serializer = CartSerializer(cart)
+        return Response({"cart" : serializer.data})

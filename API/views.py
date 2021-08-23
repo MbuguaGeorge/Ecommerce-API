@@ -78,6 +78,18 @@ def add(request, pk):
     else:
         return Response({'error'})
 
+
+@api_view(['GET',])
+@permission_classes((IsAuthenticated,))
+def remove(request, pk):
+    product = get_object_or_404(Product, id=pk)
+    if request.user.is_authenticated:
+        mycart, _ = Cart.objects.get_or_create(user=request.user)
+        mycart.product.remove(product)
+        return Response({'item removed'})
+    else:
+        return Response({'error'})
+
 class CartView(APIView):
     permission_classes = (IsAuthenticated,)
     

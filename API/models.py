@@ -30,3 +30,10 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Favourite(models.Model):
+    user = models.OneToOneField(User, models.CASCADE, blank=True)
+    product = models.ManyToManyField(Product, blank=True)
+
+    def __str__(self):
+        return self.user.username

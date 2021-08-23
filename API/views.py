@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from .models import Product, Cart
+from .models import Product, Cart, Favourite
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -97,3 +97,14 @@ class CartView(APIView):
         cart = Cart.objects.get(user=request.user)
         serializer = CartSerializer(cart)
         return Response({"cart" : serializer.data})
+
+@api_view(['GET',])
+@permission_classes((IsAuthenticated,))
+def favourite(request,pk):
+    product = get_object_or_404(Product, id=pk)
+    if request.user.is_authenticated:
+        saved, _ = Favourite.objects.get_or_create(user=request.user)
+        saved.product.add(product)
+        return Response({'product saved as favourite'})
+    else:
+        return Response({'error'})

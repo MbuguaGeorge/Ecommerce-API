@@ -11,4 +11,5 @@ urlpatterns = [
     path('cart/', views.CartView.as_view()),
     path('remove/<str:pk>/', views.remove),
     path('save/<str:pk>/', views.favourite),
+    path('favourite/', views.SaveView.as_view()),
 ]

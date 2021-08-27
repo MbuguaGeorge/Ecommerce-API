@@ -1,7 +1,8 @@
 from django.contrib.auth import authenticate
 from rest_framework import generics, permissions, status
+from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
-from .serializers import ProfileSerializer, ListSerializer, UserSerializer, CartSerializer
+from .serializers import ProfileSerializer, ListSerializer, UserSerializer, CartSerializer, SaveSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
@@ -108,3 +109,11 @@ def favourite(request,pk):
         return Response({'product saved as favourite'})
     else:
         return Response({'error'})
+    
+class SaveView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        favourite = Favourite.objects.get(user=request.user)
+        serializer = SaveSerializer(favourite)
+        return Response({"favourite" : serializer.data})

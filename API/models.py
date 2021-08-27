@@ -37,3 +37,12 @@ class Favourite(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class New_Arrival(models.Model):
+    product_name = models.CharField(max_length=100)
+    product_price = models.FloatField()
+    thumbnail = models.ImageField(blank=False)
+    date_added = models.DateTimeField(auto_now_add=True,null=True)
+
+    def __str__(self):
+        return self.product_name

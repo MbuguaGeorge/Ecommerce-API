@@ -12,4 +12,5 @@ urlpatterns = [
     path('remove/<str:pk>/', views.remove),
     path('save/<str:pk>/', views.favourite),
     path('favourite/', views.SaveView.as_view()),
+    path('new', views.NewList.as_view()),
 ]

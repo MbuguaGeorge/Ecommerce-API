@@ -2,12 +2,12 @@ from django.contrib.auth import authenticate
 from rest_framework import generics, permissions, status
 from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
-from .serializers import ProfileSerializer, ListSerializer, UserSerializer, CartSerializer, SaveSerializer
+from .serializers import ProfileSerializer, ListSerializer, UserSerializer, CartSerializer, SaveSerializer, NewSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from .models import Product, Cart, Favourite
+from .models import Product, Cart, Favourite, New_Arrival
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -117,3 +117,10 @@ class SaveView(APIView):
         favourite = Favourite.objects.get(user=request.user)
         serializer = SaveSerializer(favourite)
         return Response({"favourite" : serializer.data})
+
+class NewList(generics.ListAPIView):
+    lookup_field = 'pk'
+    serializer_class = NewSerializer
+
+    def get_queryset(self):
+        return New_Arrival.objects.all()

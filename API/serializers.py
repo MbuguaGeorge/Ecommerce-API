@@ -1,6 +1,7 @@
+from django.db.models import fields
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Product, Cart, Favourite
+from .models import Product, Cart, Favourite, New_Arrival
 
 class ProfileSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type' : 'password'}, write_only=True)
@@ -49,3 +50,8 @@ class SaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favourite
         fields = ('user','product')
+
+class NewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = New_Arrival
+        fields = ('product_name', 'product_price', 'thumbnail', 'id')
